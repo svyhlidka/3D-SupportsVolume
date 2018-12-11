@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import vtk
+from vtk import *
 from numpy import random,genfromtxt,size
  
  
