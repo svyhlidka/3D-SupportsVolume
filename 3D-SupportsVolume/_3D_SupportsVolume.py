@@ -19,6 +19,14 @@ class Triangle():
 
 class MyReader():
     
+    def __init__(self):
+        self.maxX = 0.0
+        self.minX = 10000000.0
+        self.maxY = 0.0
+        self.minY = 10000000.0
+        self.maxZ = 0.0
+        self.minZ = 10000000.0
+
    
     def load_file(self,path):
        # all = [line for line in open(path)]
@@ -35,13 +43,7 @@ class MyReader():
                 lines.append([float(x) for x in ((str(i) + line.replace("vertex","")).strip().split(' '))])
             if "endfacet" in str(line): i +=1
         file.close
-        maxX = 0.0
-        minX = 10000000.0
-        maxY = 0.0
-        minY = 10000000.0
-        maxZ = 0.0
-        minZ = 10000000.0
-        triangles = []
+
 
         file = open(path,"r")
         line=file.readline()
@@ -60,34 +62,16 @@ class MyReader():
         file.close()
 
 
-        for item in lines: 
-            if item[1] > maxX: maxX = item[1]
-            if item[2] > maxY: maxY = item[2]
-            if item[3] > maxZ: maxZ = item[3]
-            if item[1] < maxX: minX = item[1]
-            if item[2] < maxY: minY = item[2]
-            if item[3] < maxZ: minZ = item[3]
-
-        print(minX, minY, minZ, "  >   ", maxX, maxY, maxZ)
-
-
-        maxX = 0.0
-        minX = 10000000.0
-        maxY = 0.0
-        minY = 10000000.0
-        maxZ = 0.0
-        minZ = 10000000.0
 
         for item in triangles: 
             for i in range(1,4):
-              if item[i][0] > maxX: maxX = item[i][0]
-              if item[i][1] > maxY: maxY = item[i][1]
-              if item[i][2] > maxZ: maxZ = item[i][2]
-              if item[i][0] < maxX: minX = item[i][0]
-              if item[i][1] < maxY: minY = item[i][1]
-              if item[i][2] < maxZ: minZ = item[i][2]
-        print(minX, minY, minZ, "  >   ", maxX, maxY, maxZ)
-
+              if item[i][0] > self.maxX: self.maxX = item[i][0]
+              if item[i][1] > self.maxY: self.maxY = item[i][1]
+              if item[i][2] > self.maxZ: self.maxZ = item[i][2]
+              if item[i][0] < self.maxX: self.minX = item[i][0]
+              if item[i][1] < self.maxY: self.minY = item[i][1]
+              if item[i][2] < self.maxZ: self.minZ = item[i][2]
+ 
         dict = {}
         i_list = []
         x=0
@@ -137,6 +121,16 @@ class MyReader():
 
 class Reader2():
     
+    
+    def __init__(self):
+        self.maxX = 0.0
+        self.minX = 10000000.0
+        self.maxY = 0.0
+        self.minY = 10000000.0
+        self.maxZ = 0.0
+        self.minZ = 10000000.0
+        self.triangles = []
+
     def save_file(self, path, block):
         file_w = open(path,"w")
         file_w.write("solid")
@@ -152,14 +146,46 @@ class Reader2():
             file_w.write(str)
             str = "vertex " + "{:.8f}".format(item[3][0]) + " " +"{:.8f}".format(item[3][1]) + " " + "{:.8f}".format(item[3][2]) + "\n"
             file_w.write(str)
-            file_w.write("end loop")
+            file_w.write("endloop")
             file_w.write("\n")
             file_w.write("endfacet")
             file_w.write("\n")
             file_w.write("endsolid")
             file_w.write("\n")
         file_w.close()
+    
+    def triangle_area(self, x, y, z):
+        #x,y,z tuple x(0,1), y(0,1), z(0,1)
+        a=((x[0]-y[0])**2+(x[1]-y[1])**2)**.5
+        b=((y[0]-z[0])**2+(y[1]-z[1])**2)**.5
+        c=((x[0]-z[0])**2+(x[1]-z[1])**2)**.5
+        s =(a+b+c)/2
+        return (s*(s-a)*(s-b)*(s-c))**.5
 
+    def check_above(self):
+        pass
+        return False
+
+    def edge_test(self,item,factor):
+        #item triple tuple - triangle coordinates [(x1,y1,z1), (x2,y2,z2), (x3,y3,z3)]
+        for i in range(0,3):
+            if i == 2: j = 1
+            else: j = i+1
+            deltax = (item[j][0]-item[i][0])/factor
+            deltay = (item[j][1]-item[i][1])/factor
+            x = item[i][0]
+            y = item[i][1]
+            x1 = item[j][0]
+            y1 = item[j][1]
+            for r in range(0,factor):
+                x += deltax
+                y += deltay                
+           # if self.check_above:
+              #  pass
+              #  break
+              #  print(x,y)
+
+           
 
     def load_file(self,path):
        # all = [line for line in open(path)]
@@ -171,15 +197,9 @@ class Reader2():
         xx = 0
     #    d=[float(x) for x in (t.strip().split(" "))]
         lines = []
-        triangles = []
-        maxX = 0.0
-        minX = 10000000.0
-        maxY = 0.0
-        minY = 10000000.0
-        maxZ = 0.0
-        minZ = 10000000.0
 
 
+        self.triangles = []
         file = open(path,"r")
         line=file.readline()
         while True:
@@ -190,26 +210,68 @@ class Reader2():
                 for i in range(1,4):
                     line=file.readline() # reading vertex
                     tline.append([float(x) for x in (line.replace("vertex","")).strip().split(' ')]) 
-                    if tline[i][0] > maxX: maxX = tline[i][0]
-                    if tline[i][1] > maxY: maxY = tline[i][1]
-                    if tline[i][2] > maxZ: maxZ = tline[i][2]
-                    if tline[i][0] < maxX: minX = tline[i][0]
-                    if tline[i][1] < maxY: minY = tline[i][1]
-                    if tline[i][2] < maxZ: minZ = tline[i][2]
+                    if tline[i][0] > self.maxX: self.maxX = tline[i][0]
+                    if tline[i][1] > self.maxY: self.maxY = tline[i][1]
+                    if tline[i][2] > self.maxZ: self.maxZ = tline[i][2]
+                    if tline[i][0] < self.maxX: self.minX = tline[i][0]
+                    if tline[i][1] < self.maxY: self.minY = tline[i][1]
+                    if tline[i][2] < self.maxZ: self.minZ = tline[i][2]
                 if tline[0][2] > 0.001:
+                    s = self.triangle_area((tline[1][0],tline[1][1]),(tline[2][0],tline[2][1]),(tline[3][0],tline[3][1]))
   #                 print(tline)
   #                 print(tline[0][2])
-                   triangles.append(tline)
-                   xx += 1
+                    tline.append(s)
+                    self.triangles.append(tline)
+                    xx += 1
+  #                  print(s)
+  #                  print(tline)
             line = file.readline()
             if not line: break
         file.close()
         print("total:", xx)
-        print(minX, minY, minZ, "  >   ", maxX, maxY, maxZ)
-        return triangles
+        print("min > max", self.minX, self.minY, self.minZ, "  >   ", self.maxX, self.maxY, self.maxZ)
+        return self.triangles
+
+    def PointInTriangle1(self, p, a,b,c, delta):
+        A  = self.triangle_area(a, b, c)
+        A1 = self.triangle_area(p, b, c)
+        A2 = self.triangle_area(a, p, c)
+        A3 = self.triangle_area(a, b, p)
+        return (abs(A-A1-A2-A3) < delta)
+
+    def find_triangle(self,x,y,z):
+        tri = []
+        for item in self.triangles:
+            print(item)
+            if self.PointInTriangle1((x,y,z),item[1],item[2],item[3],0.01):
+                tri = item
+                print("##################   mam ho", x,y,z,"item:",item)
 
 
+r2 = Reader2()
 
-x = Reader2()
-block = x.load_file(r"C:/3D/Petr/TEST.stl")
-x.save_file("C:/3D/Petr/XXX.stl", block)
+block = r2.load_file(r"C:/3D/Petr/TEST.stl")  #Support_count_test_ASCII.stl") #
+#x.save_file("C:/3D/Petr/XXX.stl", block)
+#print(x.triangle_area((2,1,1),(6,1,1),(4,3,1)))
+#print(x.edge_test([(1,5,1),(5,4,1),(4,1,1)],10))
+
+a = (1,5,1)
+b = (5,4,1)
+c = (4,1,1)
+p = (4.8, 4,1)
+
+print("je tam:", r2.PointInTriangle1(p, a,b,c, 0.01))
+i = 0
+startx = int(r2.minX/0.1)
+endx   = int(r2.maxX/0.1)
+starty = int(r2.minY/0.1)
+endy   = int(r2.maxY/0.1)
+for xx in range(startx, endx, 1):
+    for yy in range(starty,endy,1):
+      #print(i,xx*.1, yy*.1)
+      r2.find_triangle(xx,yy,0)
+      i += 1
+     # if i > 100: break
+print("i:",i)
+
+
