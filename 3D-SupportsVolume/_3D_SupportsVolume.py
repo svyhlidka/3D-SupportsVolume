@@ -131,10 +131,36 @@ class Reader2():
         self.minZ = 10000000.0
         self.triangles = []
 
+    def save_filedict(self, path, block):
+        file_w = open(path,"w")
+        file_w.write("solid")
+        file_w.write("\n")
+        for item in block:
+            # item - index
+            # block[item] - value
+            str = "facet normal " + "{:.8f}".format(block[item][0][0]) + " " +"{:.8f}".format(block[item][0][1]) + " " + "{:.8f}".format(block[item][0][2]) + "\n"
+            file_w.write(str)
+            file_w.write("outer loop")
+            file_w.write("\n")
+            str = "vertex " + "{:.8f}".format(item[0][0]) + " " +"{:.8f}".format(item[0][1]) + " " + "{:.8f}".format(item[0][2]) + "\n"
+            file_w.write(str)
+            str = "vertex " + "{:.8f}".format(item[1][0]) + " " +"{:.8f}".format(item[1][1]) + " " + "{:.8f}".format(item[1][2]) + "\n"
+            file_w.write(str)
+            str = "vertex " + "{:.8f}".format(item[2][0]) + " " +"{:.8f}".format(item[2][1]) + " " + "{:.8f}".format(item[2][2]) + "\n"
+            file_w.write(str)
+            file_w.write("endloop")
+            file_w.write("\n")
+            file_w.write("endfacet")
+            file_w.write("\n")
+        file_w.write("endsolid")
+        file_w.write("\n")
+        file_w.close()
+
     def save_file(self, path, block):
         file_w = open(path,"w")
         file_w.write("solid")
         file_w.write("\n")
+        # {vertex:x,y,z:facet, s, p}
         for item in block:
             str = "facet normal " + "{:.8f}".format(item[0][0]) + " " +"{:.8f}".format(item[0][1]) + " " + "{:.8f}".format(item[0][2]) + "\n"
             file_w.write(str)
@@ -150,8 +176,8 @@ class Reader2():
             file_w.write("\n")
             file_w.write("endfacet")
             file_w.write("\n")
-            file_w.write("endsolid")
-            file_w.write("\n")
+        file_w.write("endsolid")
+        file_w.write("\n")
         file_w.close()
     
     def triangle_area(self, x, y, z):
@@ -199,7 +225,8 @@ class Reader2():
         lines = []
 
 
-        self.triangles = []
+        self.triangles = [] # = {}
+        self.trianglesd = {}
         file = open(path,"r")
         line=file.readline()
         while True:
@@ -216,15 +243,13 @@ class Reader2():
                     if tline[i][0] < self.maxX: self.minX = tline[i][0]
                     if tline[i][1] < self.maxY: self.minY = tline[i][1]
                     if tline[i][2] < self.maxZ: self.minZ = tline[i][2]
+                avgZ=(tline[1][2]+tline[2][2]+tline[3][2])/3
                 if tline[0][2] > 0.001:
                     s = self.triangle_area((tline[1][0],tline[1][1]),(tline[2][0],tline[2][1]),(tline[3][0],tline[3][1]))
-  #                 print(tline)
-  #                 print(tline[0][2])
                     tline.append(s)
                     self.triangles.append(tline)
+                    self.trianglesd[((tline[1][0],tline[1][1],tline[1][2]),(tline[2][0],tline[2][1],tline[2][2]),(tline[3][0],tline[3][1],tline[3][2]))]=((tline[0][0],tline[0][1],tline[0][2]),s,avgZ)
                     xx += 1
-  #                  print(s)
-  #                  print(tline)
             line = file.readline()
             if not line: break
         file.close()
@@ -240,38 +265,71 @@ class Reader2():
         return (abs(A-A1-A2-A3) < delta)
 
     def find_triangle(self,x,y,z):
-        tri = []
+        maxZtri = [] # item with max Z
+        zz = -999999999.99
         for item in self.triangles:
-            print(item)
+ #           print(item)
             if self.PointInTriangle1((x,y,z),item[1],item[2],item[3],0.01):
-                tri = item
-                print("##################   mam ho", x,y,z,"item:",item)
+                # keep average z, looking for max Z
+                zzz = (item[1][2]+item[2][2]+item[3][2])/3
+                if zzz > zz:
+                   zz = zzz
+                   if len(maxZtri) > 0: self.triangles.remove(maxZtri)
+                   maxZtri = item
+
+    def find_triangled(self,x,y,z):
+        new_d = self.trianglesd.copy()
+        maxZtri = () # item with max Z
+        zz = -999999999.99
+        for item in self.trianglesd:
+ #           print("zz:",zz,item)
+            if self.PointInTriangle1((x,y,z),item[0],item[1],item[2],0.1):
+                # keep average z, looking for max Z
+                zzz = (item[0][2]+item[1][2]+item[2][2])/3
+ #               if (item[0][2]==3.6946) or (zzz==3.6946): print(zzz,"vs.",item[0][2])
+                if zzz > zz:
+                    if len(maxZtri) > 0: new_d.pop(maxZtri, None) #!!!!!!!!!!
+                    zz = zzz
+                    maxZtri = item
+                else:
+                   if len(maxZtri) > 0 and zzz < zz: new_d.pop(item, None)
+
+        self.trianglesd = new_d.copy()
+        new_d = {}
+
+
 
 
 r2 = Reader2()
-
-block = r2.load_file(r"C:/3D/Petr/TEST.stl")  #Support_count_test_ASCII.stl") #
-#x.save_file("C:/3D/Petr/XXX.stl", block)
-#print(x.triangle_area((2,1,1),(6,1,1),(4,3,1)))
-#print(x.edge_test([(1,5,1),(5,4,1),(4,1,1)],10))
+block = r2.load_file(r"C:/3D/Petr/TEST.stl")  #Support_count_test_ASCII.stl") #TEST.stl
+r2.save_file("C:/3D/Petr/XXX.stl", block)
+#print(r2.triangle_area((2,1,1),(6,1,1),(4,3,1)))
+#print(r2.edge_test([(1,5,1),(5,4,1),(4,1,1)],10))
 
 a = (1,5,1)
 b = (5,4,1)
 c = (4,1,1)
 p = (4.8, 4,1)
 
-print("je tam:", r2.PointInTriangle1(p, a,b,c, 0.01))
+print("je tam:", r2.PointInTriangle1(p, a,b,c, 0.001))
 i = 0
-startx = int(r2.minX/0.1)
-endx   = int(r2.maxX/0.1)
-starty = int(r2.minY/0.1)
-endy   = int(r2.maxY/0.1)
+startx = int(r2.minX/0.001)  # bylo 0.1
+endx   = int(r2.maxX/0.001)
+starty = int(r2.minY/0.001)
+endy   = int(r2.maxY/0.001)
+print(startx,endx,starty,endy)
+print("triangles:", len(r2.trianglesd))
+print("start:",time.asctime( time.localtime(time.time()) ))
+
+
 for xx in range(startx, endx, 1):
     for yy in range(starty,endy,1):
-      #print(i,xx*.1, yy*.1)
-      r2.find_triangle(xx,yy,0)
+      r2.find_triangled(xx,yy,0)
       i += 1
-     # if i > 100: break
-print("i:",i)
 
+print("i:",i)
+print("triangles:", len(r2.trianglesd))
+print("end:",time.asctime( time.localtime(time.time()) ))
+r2.save_file("C:/3D/Petr/XXXred.stl", r2.triangles)
+r2.save_filedict("C:/3D/Petr/XXXdict.stl", r2.trianglesd)
 
