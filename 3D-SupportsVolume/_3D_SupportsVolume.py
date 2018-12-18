@@ -1,9 +1,6 @@
-from PyQt5.QtWidgets import * #QWidget, QApplication, QFrame, QMessageBox, QLabel, QDesktopWidget,  QMainWindow, QDialog
 import sys, random
-from PyQt5.QtCore import Qt, QBasicTimer, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import *
-import winsound         # for sound  
 import time             # for sleep
+import collections
 #app = QApplication(sys.argv)
 
 
@@ -130,6 +127,33 @@ class Reader2():
         self.maxZ = 0.0
         self.minZ = 10000000.0
         self.triangles = []
+        self.new_d = {}
+
+
+    def save_filedictx(self, path, block):
+        file_w = open(path,"w")
+        file_w.write("solid")
+        file_w.write("\n")
+        for item in block:
+            # item - index
+            # block[item] - value
+            str = "facet normal " + "{:.8f}".format(block[item][0]) + " " +"{:.8f}".format(block[item][1]) + " " + "{:.8f}".format(block[item][2]) + "\n"
+            file_w.write(str)
+            file_w.write("outer loop")
+            file_w.write("\n")
+            str = "vertex " + "{:.8f}".format(item[1][0][0]) + " " +"{:.8f}".format(item[1][0][1]) + " " + "{:.8f}".format(item[1][0][2]) + "\n"
+            file_w.write(str)
+            str = "vertex " + "{:.8f}".format(item[1][1][0]) + " " +"{:.8f}".format(item[1][1][1]) + " " + "{:.8f}".format(item[1][1][2]) + "\n"
+            file_w.write(str)
+            str = "vertex " + "{:.8f}".format(item[1][2][0]) + " " +"{:.8f}".format(item[1][2][1]) + " " + "{:.8f}".format(item[1][2][2]) + "\n"
+            file_w.write(str)
+            file_w.write("endloop")
+            file_w.write("\n")
+            file_w.write("endfacet")
+            file_w.write("\n")
+        file_w.write("endsolid")
+        file_w.write("\n")
+        file_w.close()
 
     def save_filedict(self, path, block):
         file_w = open(path,"w")
@@ -227,6 +251,7 @@ class Reader2():
 
         self.triangles = [] # = {}
         self.trianglesd = {}
+        self.trianglesdx = {}
         file = open(path,"r")
         line=file.readline()
         while True:
@@ -248,13 +273,16 @@ class Reader2():
                     s = self.triangle_area((tline[1][0],tline[1][1]),(tline[2][0],tline[2][1]),(tline[3][0],tline[3][1]))
                     tline.append(s)
                     self.triangles.append(tline)
-                    self.trianglesd[((tline[1][0],tline[1][1],tline[1][2]),(tline[2][0],tline[2][1],tline[2][2]),(tline[3][0],tline[3][1],tline[3][2]))]=((tline[0][0],tline[0][1],tline[0][2]),s,avgZ)
+#                    self.trianglesd[((tline[1][0],tline[1][1],tline[1][2]),(tline[2][0],tline[2][1],tline[2][2]),(tline[3][0],tline[3][1],tline[3][2]))]=((tline[0][0],tline[0][1],tline[0][2]),s,avgZ)
+#vertex 0,1,2  factor 3
+                    self.trianglesd[avgZ, ((tline[1][0],tline[1][1],tline[1][2]),(tline[2][0],tline[2][1],tline[2][2]),(tline[3][0],tline[3][1],tline[3][2]))] = (tline[0][0],tline[0][1],tline[0][2])
                     xx += 1
             line = file.readline()
             if not line: break
         file.close()
         print("total:", xx)
         print("min > max", self.minX, self.minY, self.minZ, "  >   ", self.maxX, self.maxY, self.maxZ)
+        self.trianglesdx = collections.OrderedDict(sorted(r2.trianglesd.items(),reverse=True))
         return self.triangles
 
     def PointInTriangle1(self, p, a,b,c, delta):
@@ -294,14 +322,18 @@ class Reader2():
                 else:
                    if len(maxZtri) > 0 and zzz < zz: new_d.pop(item, None)
 
-        self.trianglesd = new_d.copy()
-        new_d = {}
+    def find_triangledx(self,x,y,z):
+        for item in self.trianglesdx:
+            if self.PointInTriangle1((x,y,z),item[1][0],item[1][1],item[1][2],0.1):
+                # find the first
+                self.new_d[item] = self.trianglesdx[item]
+                return
 
 
 
 
 r2 = Reader2()
-block = r2.load_file(r"C:/3D/Petr/TEST.stl")  #Support_count_test_ASCII.stl") #TEST.stl
+block = r2.load_file(r"C:/3D/Petr/Support_count_test_ASCII.stl")  #Support_count_test_ASCII.stl") #TEST.stl
 r2.save_file("C:/3D/Petr/XXX.stl", block)
 #print(r2.triangle_area((2,1,1),(6,1,1),(4,3,1)))
 #print(r2.edge_test([(1,5,1),(5,4,1),(4,1,1)],10))
@@ -311,25 +343,37 @@ b = (5,4,1)
 c = (4,1,1)
 p = (4.8, 4,1)
 
-print("je tam:", r2.PointInTriangle1(p, a,b,c, 0.001))
+print("je tam:", r2.PointInTriangle1(p, a,b,c, 0.1))
 i = 0
-startx = int(r2.minX/0.001)  # bylo 0.1
-endx   = int(r2.maxX/0.001)
-starty = int(r2.minY/0.001)
-endy   = int(r2.maxY/0.001)
+startx = int(r2.minX/0.1)  # bylo 0.1
+endx   = int(r2.maxX/0.1)
+starty = int(r2.minY/0.1)
+endy   = int(r2.maxY/0.1)
 print(startx,endx,starty,endy)
-print("triangles:", len(r2.trianglesd))
+print("triangles:", len(r2.trianglesdx), len(r2.triangles))
+
+#orderedD = collections.OrderedDict(sorted(r2.trianglesd.items(),reverse=True))
+#print("start0:",time.asctime( time.localtime(time.time()) ))
+#print("triangles:", len(orderedD))
+#i = 0
+#for item in orderedD:
+ #   print(item, orderedD[item])
+ #   print(item, orderedD[item][0][0],orderedD[item][0][1],orderedD[item][0][2])
+ #   i += 1
+ #   if i > 1000: break
+
 print("start:",time.asctime( time.localtime(time.time()) ))
 
-
+j = 0
 for xx in range(startx, endx, 1):
     for yy in range(starty,endy,1):
-      r2.find_triangled(xx,yy,0)
+      r2.find_triangledx(xx,yy,0)
       i += 1
 
+
 print("i:",i)
-print("triangles:", len(r2.trianglesd))
+print("triangles:", len(r2.new_d))
 print("end:",time.asctime( time.localtime(time.time()) ))
 r2.save_file("C:/3D/Petr/XXXred.stl", r2.triangles)
-r2.save_filedict("C:/3D/Petr/XXXdict.stl", r2.trianglesd)
+r2.save_filedictx("C:/3D/Petr/XXXdict.stl", r2.new_d)
 
