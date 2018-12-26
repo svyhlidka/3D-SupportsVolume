@@ -40,8 +40,8 @@ class Reader():
     #        print(block[item][1][0][1])
             # item - index
             # block[item] - value
-#            str = "facet normal " + "{:.8f}".format(block[item][0][0]) + " " +"{:.8f}".format(block[item][0][1]) + " " + "{:.8f}".format(block[item][0][2]) + "\n"
-            str = "facet normal " + "{:.8f}".format(block[item][0][0]) + " " +"{:.8f}".format(block[item][0][1]) + " " + "{:.8f}".format(block[item][0][2]) + "\n"
+#            str = "facet normal " + "{:.6f}".format(block[item][0][0]) + " " +"{:.6f}".format(block[item][0][1]) + " " + "{:.6f}".format(block[item][0][2]) + "\n"
+            str = "facet normal " + "{:.6f}".format(block[item][0][0]) + " " +"{:.6f}".format(block[item][0][1]) + " " + "{:.6f}".format(block[item][0][2]) + "\n"
             file_w.write(str)
             file_w.write("outer loop")
             file_w.write("\n")
@@ -73,7 +73,7 @@ class Reader():
         for item in block:
             # item - index
             # block[item] - value
-            str = "facet normal " + "{:.8f}".format(block[item][0][0]) + " " +"{:.8f}".format(block[item][0][1]) + " " + "{:.8f}".format(block[item][0][2]) + "\n"
+            str = "facet normal " + "{:.6f}".format(block[item][0][0]) + " " +"{:.6f}".format(block[item][0][1]) + " " + "{:.6f}".format(block[item][0][2]) + "\n"
             file_w.write(str)
             file_w.write("outer loop")
             file_w.write("\n")
@@ -97,7 +97,7 @@ class Reader():
         file_w.write("\n")
         # {vertex:x,y,z:facet, s, p}
         for item in block:
-            str = "facet normal " + "{:.8f}".format(item[0][0]) + " " +"{:.8f}".format(item[0][1]) + " " + "{:.8f}".format(item[0][2]) + "\n"
+            str = "facet normal " + "{:.6f}".format(item[0][0]) + " " +"{:.6f}".format(item[0][1]) + " " + "{:.6f}".format(item[0][2]) + "\n"
             file_w.write(str)
             file_w.write("outer loop")
             file_w.write("\n")

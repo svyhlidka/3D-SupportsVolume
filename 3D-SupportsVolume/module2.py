@@ -13,6 +13,14 @@ class Reader():
         self.total_ops = 0
         self.vol = 0.0
 
+    def triangle_area(self, x, y, z):
+        #x,y,z tuple x(0,1), y(1,1), z(2,1)
+        a=((x[0]-y[0])**2+(x[1]-y[1])**2)**.5
+        b=((y[0]-z[0])**2+(y[1]-z[1])**2)**.5
+        c=((x[0]-z[0])**2+(x[1]-z[1])**2)**.5
+        s =(a+b+c)/2
+        return (s*(s-a)*(s-b)*(s-c))**.5
+
     def load_file(self,path):
        # all = [line for line in open(path)]
        # print(all)
@@ -43,29 +51,20 @@ class Reader():
                 tminY = 99999999.0
                 tline.append([float(x) for x in (line.replace("facet normal","")).strip().split(' ')]) # facet normal
                 line=file.readline()  # outer loop
+                n=0
                 for i in range(1,4):
                     line=file.readline() # reading vertex
                     tline.append([float(x) for x in (line.replace("vertex","")).strip().split(' ')]) 
-                    if tline[i][0] > self.maxX: self.maxX = tline[i][0]
-                    if tline[i][1] > self.maxY: self.maxY = tline[i][1]
-                    if tline[i][2] > self.maxZ: self.maxZ = tline[i][2]
-                    if tline[i][0] < self.minX: self.minX = tline[i][0]
-                    if tline[i][1] < self.minY: self.minY = tline[i][1]
-                    if tline[i][2] < self.minZ: self.minZ = tline[i][2]
                     # triangle min-max
                     if not tline[i][2] in z:
-                        # [z] : minX, minY, maxX,maxY
-                        z[tline[i][2]] = (tline[i][0],tline[i][1],tline[i][0],tline[i][1])
+                        # [z] : minX, minY, maxX, maxY,#tri
+                        z[tline[i][2]] = (tline[i][0],tline[i][1],tline[i][0],tline[i][1],0)
                     else:
-                        if tline[i][0] < z[tline[i][2]][0] : z[tline[i][2]] = (tline[i][0],z[tline[i][2]][1],z[tline[i][2]][2],z[tline[i][2]][3]) # minX
-                        if tline[i][1] < z[tline[i][2]][1] : z[tline[i][2]] = (z[tline[i][2]][0],tline[i][1],z[tline[i][2]][2],z[tline[i][2]][3]) # maxX
-                        if tline[i][0] > z[tline[i][2]][2] : z[tline[i][2]] = (z[tline[i][2]][0],z[tline[i][2]][1],tline[i][0],z[tline[i][2]][3]) # minX
-                        if tline[i][1] > z[tline[i][2]][3] : z[tline[i][2]] = (z[tline[i][2]][0],z[tline[i][2]][1],z[tline[i][2]][2],tline[i][1]) # maxX
-                    if tline[i][0] > tmaxX: tmaxX = tline[i][0]
-                    if tline[i][1] > tmaxY: tmaxY = tline[i][1]
-                    if tline[i][0] < tminX: tminX = tline[i][0]
-                    if tline[i][1] < tminY: tminY = tline[i][1]
-                avgZ=(tline[1][2]+tline[2][2]+tline[3][2])/3
+                        n=z[tline[i][2]][4]+1
+                        if tline[i][0] < z[tline[i][2]][0] : z[tline[i][2]] = (tline[i][0],z[tline[i][2]][1],z[tline[i][2]][2],z[tline[i][2]][3],n) # minX
+                        if tline[i][1] < z[tline[i][2]][1] : z[tline[i][2]] = (z[tline[i][2]][0],tline[i][1],z[tline[i][2]][2],z[tline[i][2]][3],n) # maxX
+                        if tline[i][0] > z[tline[i][2]][2] : z[tline[i][2]] = (z[tline[i][2]][0],z[tline[i][2]][1],tline[i][0],z[tline[i][2]][3],n) # minX
+                        if tline[i][1] > z[tline[i][2]][3] : z[tline[i][2]] = (z[tline[i][2]][0],z[tline[i][2]][1],z[tline[i][2]][2],tline[i][1],n) # maxX
             line = file.readline()
             if not line: break
         file.close()
@@ -75,3 +74,10 @@ class Reader():
 
 r2 = Reader()
 block = r2.load_file(r"C:/3D/Petr/XXXdict.stl")
+#print("##############################################################")
+#block = r2.load_file(r"C:/3D/Petr/Support_count_test_ASCII.stl")
+volume = 0.0
+for item in r2.new_d:
+    volume += item[0]*r2.new_d[item][1]
+print("find tri", i,"total ops:",r2.total_ops)
+print("volume:",volume, r2.vol)
