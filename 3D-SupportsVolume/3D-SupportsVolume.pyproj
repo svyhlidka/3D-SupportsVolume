@@ -30,6 +30,15 @@
     <Compile Include="module3.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="module4.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="module5.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="module6.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="object_difference.py">
       <SubType>Code</SubType>
     </Compile>

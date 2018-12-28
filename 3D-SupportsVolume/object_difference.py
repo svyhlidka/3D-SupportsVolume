@@ -19,7 +19,7 @@ class Reader():
     def save_file(self, path, block):
         print(block)
         file_w = open(path,"w")
-        file_w.write("solid")
+        file_w.write("solid ")
         file_w.write("\n")
         # {vertex:x,y,z:facet, s, p}
         for item in block:
@@ -71,6 +71,6 @@ class Reader():
         return t1
 
 r2 = Reader()
-block = r2.compare(r2.load_file(r"C:/3D/Petr/Support_count_test_ASCII.stl"),r2.load_file(r"C:/3D/Petr/XXXdict.stl"))  #Support_count_test_ASCII.stl") #TEST.stl
+block = r2.compare(r2.load_file(r"C:/3D/Petr/TEST.stl"),r2.load_file(r"C:/3D/Petr/XXXdict01.stl"))  #Support_count_test_ASCII.stl") #TEST.stl
 
-r2.save_file("C:/3D/Petr/XXXdiff.stl", block)
+r2.save_file("C:/3D/Petr/XXXdiffCube1.stl", block)
