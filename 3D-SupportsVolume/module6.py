@@ -28,93 +28,30 @@ class Reader():
         self.vol = 0.0
 
 
-    def save_filedictx(self, path, block):
-        file_w = open(path,"w")
-        file_w.write("solid ")
-        file_w.write("\n")
-        for item in block:
-#            print("#####################3")
- #           print(item)
-  #          print(block[item])
-   #         print(block[item][0][1])
-    #        print(block[item][1][0][1])
-            # item - index
-            # block[item] - value
-#            str = "facet normal " + "{:.6f}".format(block[item][0][0]) + " " +"{:.6f}".format(block[item][0][1]) + " " + "{:.6f}".format(block[item][0][2]) + "\n"
-            str = "facet normal " + "{:.6f}".format(block[item][0][0]) + " " +"{:.6f}".format(block[item][0][1]) + " " + "{:.6f}".format(block[item][0][2]) + "\n"
-            file_w.write(str)
-            file_w.write("outer loop")
-            file_w.write("\n")
-#            str = "vertex " + "{:.8f}".format(block[item][1][0][0]) + " " +"{:.8f}".format(block[item][1][0][1]) + " " + "{:.8f}".format(block[item][1][0][2]) + "\n"
-#            file_w.write(str)
-#            str = "vertex " + "{:.8f}".format(block[item][1][1][0]) + " " +"{:.8f}".format(block[item][1][1][1]) + " " + "{:.8f}".format(block[item][1][1][2]) + "\n"
-#            file_w.write(str)
-#            str = "vertex " + "{:.8f}".format(block[item][1][2][0]) + " " +"{:.8f}".format(block[item][1][2][1]) + " " + "{:.8f}".format(block[item][1][2][2]) + "\n"
-#
-            str = "vertex " + "{:.8f}".format(item[2][0][0]) + " " +"{:.8f}".format(item[2][0][1]) + " " + "{:.8f}".format(item[2][0][2]) + "\n"
-            file_w.write(str)
-            str = "vertex " + "{:.8f}".format(item[2][1][0]) + " " +"{:.8f}".format(item[2][1][1]) + " " + "{:.8f}".format(item[2][1][2]) + "\n"
-            file_w.write(str)
-            str = "vertex " + "{:.8f}".format(item[2][2][0]) + " " +"{:.8f}".format(item[2][2][1]) + " " + "{:.8f}".format(item[2][2][2]) + "\n"
-
-            file_w.write(str)
-            file_w.write("endloop")
-            file_w.write("\n")
-            file_w.write("endfacet")
-            file_w.write("\n")
-        file_w.write("endsolid")
-        file_w.write("\n")
-        file_w.close()
-
     def save_filedict(self, path, block):
         file_w = open(path,"w")
         file_w.write("solid ")
         file_w.write("\n")
         for item in block:
-            # item - index
-            # block[item] - value
-            str = "facet normal " + "{:.6f}".format(block[item][0][0]) + " " +"{:.6f}".format(block[item][0][1]) + " " + "{:.6f}".format(block[item][0][2]) + "\n"
+            str = "facet normal " + "{:.6f}".format(block[item][0]) + " " +"{:.6f}".format(block[item][1]) + " " + "{:.6f}".format(block[item][2]) + "\n"
             file_w.write(str)
             file_w.write("outer loop")
             file_w.write("\n")
-            str = "vertex " + "{:.8f}".format(item[0][0]) + " " +"{:.8f}".format(item[0][1]) + " " + "{:.8f}".format(item[0][2]) + "\n"
+            str = "vertex " + "{:.8f}".format(item[2][0][0]) + " " +"{:.8f}".format(item[2][0][1]) + " " + "{:.8f}".format(item[2][0][2]) + "\n"
             file_w.write(str)
-            str = "vertex " + "{:.8f}".format(item[1][0]) + " " +"{:.8f}".format(item[1][1]) + " " + "{:.8f}".format(item[1][2]) + "\n"
+            str = "vertex " + "{:.8f}".format(item[2][1][0]) + " " +"{:.8f}".format(item[2][1][1]) + " " + "{:.8f}".format(item[2][1][2]) + "\n"
             file_w.write(str)
-            str = "vertex " + "{:.8f}".format(item[2][0]) + " " +"{:.8f}".format(item[2][1]) + " " + "{:.8f}".format(item[2][2]) + "\n"
+            str = "vertex " + "{:.8f}".format(item[2][2][0]) + " " +"{:.8f}".format(item[2][2][1]) + " " + "{:.8f}".format(item[2][2][2]) + "\n"
             file_w.write(str)
             file_w.write("endloop")
             file_w.write("\n")
             file_w.write("endfacet")
             file_w.write("\n")
-        file_w.write("endsolid")
+        file_w.write("endsolid ")
         file_w.write("\n")
         file_w.close()
 
-    def save_file(self, path, block):
-        file_w = open(path,"w")
-        file_w.write("solid ")
-        file_w.write("\n")
-        # {vertex:x,y,z:facet, s, p}
-        for item in block:
-            str = "facet normal " + "{:.6f}".format(item[0][0]) + " " +"{:.6f}".format(item[0][1]) + " " + "{:.6f}".format(item[0][2]) + "\n"
-            file_w.write(str)
-            file_w.write("outer loop")
-            file_w.write("\n")
-            str = "vertex " + "{:.8f}".format(item[1][0]) + " " +"{:.8f}".format(item[1][1]) + " " + "{:.8f}".format(item[1][2]) + "\n"
-            file_w.write(str)
-            str = "vertex " + "{:.8f}".format(item[2][0]) + " " +"{:.8f}".format(item[2][1]) + " " + "{:.8f}".format(item[2][2]) + "\n"
-            file_w.write(str)
-            str = "vertex " + "{:.8f}".format(item[3][0]) + " " +"{:.8f}".format(item[3][1]) + " " + "{:.8f}".format(item[3][2]) + "\n"
-            file_w.write(str)
-            file_w.write("endloop")
-            file_w.write("\n")
-            file_w.write("endfacet")
-            file_w.write("\n")
-        file_w.write("endsolid")
-        file_w.write("\n")
-        file_w.close()
-    
+  
     def triangle_area(self, x, y, z):
         #x,y,z tuple x(0,1), y(1,1), z(2,1)
         a=((x[0]-y[0])**2+(x[1]-y[1])**2)**.5
@@ -122,31 +59,6 @@ class Reader():
         c=((x[0]-z[0])**2+(x[1]-z[1])**2)**.5
         s =(a+b+c)/2
         return (s*(s-a)*(s-b)*(s-c))**.5
-
-    def check_above(self):
-        pass
-        return False
-
-    def edge_test(self,item,factor):
-        #item triple tuple - triangle coordinates [(x1,y1,z1), (x2,y2,z2), (x3,y3,z3)]
-        for i in range(0,3):
-            if i == 2: j = 1
-            else: j = i+1
-            deltax = (item[j][0]-item[i][0])/factor
-            deltay = (item[j][1]-item[i][1])/factor
-            x = item[i][0]
-            y = item[i][1]
-            x1 = item[j][0]
-            y1 = item[j][1]
-            for r in range(0,factor):
-                x += deltax
-                y += deltay                
-           # if self.check_above:
-              #  pass
-              #  break
-              #  print(x,y)
-
-           
 
 
     def load_file(self,path):
@@ -162,88 +74,76 @@ class Reader():
         self.deltaZ = 999999999.0
         avgZ = 0.0
         for line in file.readlines():
-            parts = line.split() 
-            if len(parts) > 0:
-                if parts[0] == 'facet':
+            items = line.split() 
+            if len(items) > 0:
+                if items[0] == 'facet':
                     tline = []
                     tmaxX = -99999999.0
                     tmaxY = -99999999.0
                     tminX = 99999999.0
                     tminY = 99999999.0
-                    for i in range(2,5): parts[i]=float(parts[i])
-                    tline.append((parts[2], parts[3], parts[4]))
-                if parts[0] == 'vertex':
-                    for i in range(1,4): parts[i]=float(parts[i])
-                    tline.append((parts[1], parts[2], parts[3]))
-                    if parts[1] > self.maxX: self.maxX = parts[1]
-                    if parts[2] > self.maxY: self.maxY = parts[2]
-                    if parts[3] > self.maxZ: self.maxZ = parts[3]
-                    if parts[1] < self.minX: self.minX = parts[1]
-                    if parts[2] < self.minY: self.minY = parts[2]
-                    if parts[3] < self.minZ: self.minZ = parts[3]
+                    for i in range(2,5): items[i]=float(items[i])
+                    tline.append((items[2], items[3], items[4]))
+                if items[0] == 'vertex':
+                    for i in range(1,4): items[i]=float(items[i])
+                    tline.append((items[1], items[2], items[3]))
+                    if items[1] > self.maxX: self.maxX = items[1]
+                    if items[2] > self.maxY: self.maxY = items[2]
+                    if items[3] > self.maxZ: self.maxZ = items[3]
+                    if items[1] < self.minX: self.minX = items[1]
+                    if items[2] < self.minY: self.minY = items[2]
+                    if items[3] < self.minZ: self.minZ = items[3]
                     # triangle min-max
-                    if parts[1] > tmaxX: tmaxX = parts[1]
-                    if parts[2] > tmaxY: tmaxY = parts[2]
-                    if parts[1] < tminX: tminX = parts[1]
-                    if parts[2] < tminY: tminY = parts[2]
-                    avgZ=avgZ+parts[3] 
-                if parts[0] == 'endloop':
+                    if items[1] > tmaxX: tmaxX = items[1]
+                    if items[2] > tmaxY: tmaxY = items[2]
+                    if items[1] < tminX: tminX = items[1]
+                    if items[2] < tminY: tminY = items[2]
+                    avgZ=avgZ+items[3] 
+                if items[0] == 'endloop':
                     avgZ = avgZ / 3
                     self.triangles.append(tline)
-#vertex 0,1,2  factor 3
-                    self.trianglesd[avgZ, (tminX, tmaxX, tminY, tmaxY),((tline[1][0],tline[1][1],tline[1][2]),(tline[2][0],tline[2][1],tline[2][2]),(tline[3][0],tline[3][1],tline[3][2]))] = ((tline[0][0],tline[0][1],tline[0][2]))
+                    self.trianglesd[avgZ, (tminX, tmaxX, tminY, tmaxY),\
+                        ((tline[1][0],tline[1][1],tline[1][2]),\
+                        (tline[2][0],tline[2][1],tline[2][2]),\
+                        (tline[3][0],tline[3][1],tline[3][2]))] = ((tline[0][0],tline[0][1],tline[0][2]))
                     xx += 1
                     avgZ = 0.0
         file.close()
-        print("total:", xx)
-        print("min > max", self.minX, self.minY, self.minZ, "  >   ", self.maxX, self.maxY, self.maxZ)
-        self.trianglesdx = collections.OrderedDict(sorted(r2.trianglesd.items(),reverse=False))
+        tri = {}
+        for item in self.trianglesd:
+            tri[item[0]-self.minZ,(item[1][0],item[1][1],item[1][2],item[1][3]),\
+                ((item[2][0][0],item[2][0][1],(item[2][0][2]-self.minZ)),\
+                 (item[2][1][0],item[2][1][1],(item[2][1][2]-self.minZ)),\
+                 (item[2][2][0],item[2][2][1],(item[2][2][2]-self.minZ))\
+                 )] = ((self.trianglesd[item][0],self.trianglesd[item][1],self.trianglesd[item][2]))
+        self.maxZ = self.maxZ - self.minZ
+        self.minZ = 0
+        self.trianglesd = {}
+        self.trianglesdx = collections.OrderedDict(sorted(tri.items(),reverse=False))
         return self.triangles
 
-    def PointInTriangle1(self, p, a,b,c, delta):
+    def PointInTriangle(self, p, a,b,c, delta):
         A  = self.triangle_area(a, b, c)
         A1 = self.triangle_area(p, b, c)
         A2 = self.triangle_area(a, p, c)
         A3 = self.triangle_area(a, b, p)
         return (abs(A-A1-A2-A3) < delta)
 
-    def find_triangle(self,x,y,z):
-        maxZtri = [] # item with max Z
-        zz = -999999999.99
-        for item in self.triangles:
-            if self.PointInTriangle1((x,y,z),item[1],item[2],item[3],0.01):
-                # keep average z, looking for max Z
-                zzz = (item[1][2]+item[2][2]+item[3][2])/3
-                if zzz > zz:
-                   zz = zzz
-                   if len(maxZtri) > 0: self.triangles.remove(maxZtri)
-                   maxZtri = item
-
-    def find_triangled(self,x,y,z):
-        new_d = self.trianglesd.copy()
-        maxZtri = () # item with max Z
-        zz = -999999999.99
-        for item in self.trianglesd:
-            if self.PointInTriangle1((x,y,z),item[0],item[1],item[2],0.001):
-                # keep average z, looking for max Z
-                zzz = (item[0][2]+item[1][2]+item[2][2])/3
-                if zzz > zz:
-                    if len(maxZtri) > 0: new_d.pop(maxZtri, None) #!!!!!!!!!!
-                    zz = zzz
-                    maxZtri = item
-                    
-                else:
-                   if len(maxZtri) > 0 and zzz < zz: new_d.pop(item, None)
-
-    def find_triangledx(self,x,y,z):
+    def find_triangle(self,x,y,z,deltaX,deltaY):
+        in_body = False
+        h = 0.0
         for item in self.trianglesdx:
             self.total_ops += 1
-            if self.PointInTriangle1((x,y,z),item[2][0],item[2][1],item[2][2],0.1):
-                self.new_d[item] = self.trianglesdx[item]
-                self.vol = self.vol + (0.01*(item[2][0][2]+item[2][1][2]+item[2][2][2])/3)
-                return
-
+            if x > item[1][0] and x < item[1][1] and y > item[1][2] and y < item[1][3]:
+                if self.PointInTriangle((x,y,z),item[2][0],item[2][1],item[2][2],0.1):
+                    if in_body: 
+                        h = item[0]
+                        self.new_d[item] = self.trianglesdx[item]
+                    else: self.vol += ((item[0]-h)*deltaX*deltaY)
+                    in_body = not in_body
+                    
 r2 = Reader()
+#block = r2.load_file(r"C:/3D/Petr/TEST.stl")  #Support_count_test_ASCII.stl") #TEST.stl
 block = r2.load_file(r"C:/3D/Petr/Support_count_test_ASCII.stl")  #Support_count_test_ASCII.stl") #TEST.stl
 #r2.save_file("C:/3D/Petr/XXX.stl", block)
 dx = 0.01 #r2.deltaX*0.9
@@ -266,38 +166,16 @@ j = 0
 #for item in block: print(item)
 #for item in r2.trianglesd:
 #   print(item,r2.trianglesd[item])
-for item in r2.trianglesdx:
-    print(item,r2.trianglesdx[item])
-#file_lg = open("C:/3D/Petr/log.txt","w")
+#for item in r2.trianglesdx:
+#    print(item,r2.trianglesdx[item])
 for xx in range(startx, endx, 1):
- #   print(endx-xx, time.asctime( time.localtime(time.time()) ))
+#    print(endx-xx, time.asctime( time.localtime(time.time()) ))
     for yy in range(starty,endy,1):
-#        r2.find_triangledx(xx*dx,yy*dy,0)
+        r2.find_triangle(xx*dx,yy*dy,0,dx,dy)
         i += 1
-
-# for xx in range(startx, endx, 1):
-#    for yy in range(starty,endy,1):
-#      r2.find_triangledx(xx,yy,0)
-#      i += 1
-#file_lg.write("\n")
-#file_lg.close()
-print("i:",i)
+r2.save_filedict("C:/3D/Petr/XXXdict.stl", r2.new_d)
+print("i:",i," volume:",r2.vol)
 print("triangles:", len(r2.new_d))
 print("end:",time.asctime( time.localtime(time.time()) ))
-r2.save_file("C:/3D/Petr/XXXred.stl", r2.triangles)
-r2.save_filedictx("C:/3D/Petr/XXXdict.stl", r2.new_d)
-volume = 0.0
-for item in r2.new_d:
-    volume += item[0]*r2.new_d[item][1]
-print("find tri", i,"total ops:",r2.total_ops)
-print("volume:",volume, r2.vol)
-i = 0
-vv=0.0
-for item in r2.new_d:
-     print(i,item,r2.new_d[item])
-     vv = vv + (item[0]*r2.new_d[item][1])
-     print (vv,item[0],r2.new_d[item][1])
-     i += 1
-print("volume:", vv)
-
+print("total ops:",r2.total_ops)
 
