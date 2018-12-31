@@ -357,31 +357,20 @@ class Reader():
                 line=file.readline()  # outer loop
 
                 for i in range(1,4):
-
                     line=file.readline() # reading vertex
-
                     tline.append([float(x) for x in (line.replace("vertex","")).strip().split(' ')]) 
-
                     if tline[i][0] > self.maxX: self.maxX = tline[i][0]
-
                     if tline[i][1] > self.maxY: self.maxY = tline[i][1]
-
                     if tline[i][2] > self.maxZ: self.maxZ = tline[i][2]
-
                     if tline[i][0] < self.minX: self.minX = tline[i][0]
-
                     if tline[i][1] < self.minY: self.minY = tline[i][1]
-
                     if tline[i][2] < self.minZ: self.minZ = tline[i][2]
 
                     # triangle min-max
 
                     if tline[i][0] > tmaxX: tmaxX = tline[i][0]
-
                     if tline[i][1] > tmaxY: tmaxY = tline[i][1]
-
                     if tline[i][0] < tminX: tminX = tline[i][0]
-
                     if tline[i][1] < tminY: tminY = tline[i][1]
 
                 avgZ=(tline[1][2]+tline[2][2]+tline[3][2])/3
@@ -389,17 +378,11 @@ class Reader():
                 if tline[0][2] > 0.001:
 
                     if abs(tline[1][0]-tline[2][0]) < self.deltaX and abs(tline[1][0]-tline[2][0]) > 0: self.deltaX = abs(tline[1][0]-tline[2][0])
-
                     if abs(tline[1][0]-tline[3][0]) < self.deltaX and abs(tline[1][0]-tline[3][0]) > 0: self.deltaX = abs(tline[1][0]-tline[3][0])
-
                     if abs(tline[3][0]-tline[2][0]) < self.deltaX and abs(tline[3][0]-tline[2][0]) > 0: self.deltaX = abs(tline[3][0]-tline[2][0])
-
                     if abs(tline[1][1]-tline[2][1]) < self.deltaY and abs(tline[1][1]-tline[2][1]) > 0: self.deltaY = abs(tline[1][1]-tline[2][1])
-
                     if abs(tline[1][1]-tline[3][1]) < self.deltaY and abs(tline[1][1]-tline[3][1]) > 0: self.deltaY = abs(tline[1][1]-tline[3][1])
-
                     if abs(tline[3][1]-tline[2][1]) < self.deltaY and abs(tline[3][1]-tline[2][1]) > 0: self.deltaY = abs(tline[3][1]-tline[2][1])
-
 
 
                     s = self.triangle_area((tline[1][0],tline[1][1]),(tline[2][0],tline[2][1]),(tline[3][0],tline[3][1]))
