@@ -1,4 +1,4 @@
-import time             # for sleep
+import time             
 import collections
 
 class Reader():
@@ -14,8 +14,8 @@ class Reader():
         self.new_d     = {}
         self.total_ops = 0
         self.vol       = 0.0
-        self.deltaX    = 0.01
-        self.deltaY    = 0.01
+        self.deltaX    = 0.1
+        self.deltaY    = 0.1
 
 
     def save_filedict(self, path, block):
@@ -111,8 +111,6 @@ class Reader():
         self.minZ = 0
         self.trianglesd = {}
         self.trianglesdx = collections.OrderedDict(sorted(tri.items(),reverse=False))
-        print(self.minX,self.maxX,self.minY,self.maxY)
-#        r2.save_filedict("C:/3D/Petr/XXXdictMoved.stl", self.trianglesdx)
         return self.triangles
 
     def PointInTriangle(self, p, a,b,c, delta):
@@ -141,8 +139,6 @@ class Reader():
         endx   = int(self.maxX/self.deltaX)
         starty = int(self.minY/self.deltaY)
         endy   = int(self.maxY/self.deltaY)
-        print("X",self.minX,self.maxX,self.minY,self.maxY,self.deltaX,self.deltaY)
-        print(startx,starty,endx,endy)
         for xx in range(startx, endx, 1):
             for yy in range(starty,endy,1):
                 self.find_triangle(xx*self.deltaX,yy*self.deltaY,0,self.deltaX,self.deltaY)
@@ -152,7 +148,7 @@ r2 = Reader()
 #block = r2.load_file(r"C:/3D/Petr/TEST.stl")  #Support_count_test_ASCII.stl") #TEST.stl
 block = r2.load_file(r"C:/3D/Petr/Support_count_test_ASCII.stl")  #Support_count_test_ASCII.stl") #TEST.stl
 print("start:",time.asctime( time.localtime(time.time()) ))
-print(" volume:",r2.getVolume())
+print("VOLUME:",r2.getVolume()," <<<<<<<<")
 #r2.save_filedict("C:/3D/Petr/XXXdict.stl", r2.new_d)
 print("end:",time.asctime( time.localtime(time.time()) ))
 print("total ops:",r2.total_ops)

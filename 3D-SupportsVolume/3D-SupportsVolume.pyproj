@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>14e2bdc6-0165-4b41-a951-133b2789371d</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>_3D_SupportsVolume.py</StartupFile>
+    <StartupFile>volumeModule.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
